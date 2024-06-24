@@ -1,0 +1,58 @@
+plugins {
+    id 'java-gradle-plugin'
+    id 'java'
+    id 'groovy'
+    id 'maven-publish'
+}
+
+group="com.pluginKrylov"
+version="0.0.1-SNAPSHOT"
+
+repositories {
+    mavenCentral()
+}
+
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+dependencies {
+    testImplementation libs.junit.jupiter
+
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+gradlePlugin {
+    plugins {
+        analysis {
+            id = 'com.pluginKrylov.analysis'
+            implementationClass = 'com.pluginKrylov.GradlePluginKrylovGRPlugin'
+        }
+    }
+}
+
+sourceSets {
+    functionalTest {
+    }
+}
+
+configurations.functionalTestImplementation.extendsFrom(configurations.testImplementation)
+configurations.functionalTestRuntimeOnly.extendsFrom(configurations.testRuntimeOnly)
+
+tasks.register('functionalTest', Test) {
+    testClassesDirs = sourceSets.functionalTest.output.classesDirs
+    classpath = sourceSets.functionalTest.runtimeClasspath
+    useJUnitPlatform()
+}
+
+gradlePlugin.testSourceSets.add(sourceSets.functionalTest)
+
+tasks.named('check') {
+    dependsOn(tasks.functionalTest)
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
