@@ -13,8 +13,8 @@ public class GradlePluginKrylovGRPlugin implements Plugin<Project> {
         project.getTasks().register("analysis",task -> {
            task.doLast(task1 -> {
 
-               //        Scanner scanner = new Scanner(System.in);
-               String currentPatch = "D:\\Java\\GRDL\\P_PR_17.06";
+               Scanner scanner = new Scanner(System.in);
+               String currentPatch = scanner.nextLine();
 
                // Output the full path to the root cat
                System.out.println("\nI'M OPENING THE ROOT CAT: " + currentPatch + "\n");
