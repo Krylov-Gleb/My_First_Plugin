@@ -21,23 +21,72 @@ class GradlePluginKrylovGRPluginFunctionalTest {
         return new File(projectDir, "settings.gradle");
     }
 
-    @Test void canRunTask() throws IOException {
+    @Test void canRunTask1() throws IOException {
         writeString(getSettingsFile(), "");
         writeString(getBuildFile(),
             "plugins {" +
-            "  id('com.pluginKrylov.analysis')" +
+            "  id('com.pluginKrylov.analysisAll')" +
             "}");
 
         // Run the build
         GradleRunner runner = GradleRunner.create();
         runner.forwardOutput();
         runner.withPluginClasspath();
-        runner.withArguments("analysis");
+        runner.withArguments("analysisAll");
         runner.withProjectDir(projectDir);
         BuildResult result = runner.build();
 
-//        // Verify the result
-//        assertTrue(result.getOutput().contains("Hello from plugin 'org.example.greeting'"));
+    }
+
+    @Test void canRunTask2() throws IOException {
+        writeString(getSettingsFile(), "");
+        writeString(getBuildFile(),
+                "plugins {" +
+                        "  id('com.pluginKrylov.analysisJavaProjects')" +
+                        "}");
+
+        // Run the build
+        GradleRunner runner = GradleRunner.create();
+        runner.forwardOutput();
+        runner.withPluginClasspath();
+        runner.withArguments("analysisJavaProjects");
+        runner.withProjectDir(projectDir);
+        BuildResult result = runner.build();
+
+    }
+
+    @Test void canRunTask3() throws IOException {
+        writeString(getSettingsFile(), "");
+        writeString(getBuildFile(),
+                "plugins {" +
+                        "  id('com.pluginKrylov.analysisClassFiles')" +
+                        "}");
+
+        // Run the build
+        GradleRunner runner = GradleRunner.create();
+        runner.forwardOutput();
+        runner.withPluginClasspath();
+        runner.withArguments("analysisClassFiles");
+        runner.withProjectDir(projectDir);
+        BuildResult result = runner.build();
+
+    }
+
+    @Test void canRunTask4() throws IOException {
+        writeString(getSettingsFile(), "");
+        writeString(getBuildFile(),
+                "plugins {" +
+                        "  id('com.pluginKrylov.analysisFileResources')" +
+                        "}");
+
+        // Run the build
+        GradleRunner runner = GradleRunner.create();
+        runner.forwardOutput();
+        runner.withPluginClasspath();
+        runner.withArguments("analysisFileResources");
+        runner.withProjectDir(projectDir);
+        BuildResult result = runner.build();
+
     }
 
     private void writeString(File file, String string) throws IOException {

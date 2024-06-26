@@ -26,8 +26,20 @@ dependencies {
 
 gradlePlugin {
     plugins {
-        analysis {
-            id = 'com.pluginKrylov.analysis'
+        analysisAll {
+            id = 'com.pluginKrylov.analysisAll'
+            implementationClass = 'com.pluginKrylov.GradlePluginKrylovGRPlugin'
+        }
+        analysisJavaProjects{
+            id = 'com.pluginKrylov.analysisJavaProjects'
+            implementationClass = 'com.pluginKrylov.GradlePluginKrylovGRPlugin'
+        }
+        analysisClassFiles{
+            id = 'com.pluginKrylov.analysisClassFiles'
+            implementationClass = 'com.pluginKrylov.GradlePluginKrylovGRPlugin'
+        }
+        analysisFileResources{
+            id = 'com.pluginKrylov.analysisFileResources'
             implementationClass = 'com.pluginKrylov.GradlePluginKrylovGRPlugin'
         }
     }

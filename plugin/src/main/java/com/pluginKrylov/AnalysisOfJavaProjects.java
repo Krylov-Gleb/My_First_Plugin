@@ -6,58 +6,38 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class analysisOfJavaProjects {
+public class AnalysisOfJavaProjects {
 
-    // Count Java files
-    private static int countProjectFileJava = 0;
-
-    private static int countProjectFileResources = 0;
-
-    private static int countProjectClass = 0;
-
-    private static int countStrJavaCode = 0;
-
-    private static int countStrCommentJavaCode = 0;
-
-    private static int countMultilineComments = 0;
-
-    private static int countMethodPublic = 0;
-
-    private static int countMethodPrivate = 0;
-
-    private static int countMethodProtected = 0;
-
-    private static int countImports = 0;
-
-    private static int countNumberPackages = 0;
+    // Create class statistics
+    private final Statistics statistics = new Statistics();
 
     // Add separator (/) or (\)
     String separator = File.separator;
 
     // Getter - return count java files
     public int getCountProjectFilJava(){
-        return countProjectFileJava;
+        return statistics.getCountProjectFileJava();
     }
 
     public int getCountProjectFileResources() {
-        return countProjectFileResources;
+        return statistics.getCountProjectFileResources();
     }
 
     public int getCountProjectClass(){
-        return countProjectClass;
+        return statistics.getCountProjectClass();
     }
 
     // Delete Count_Project_File_Java
     public void deleteCountProjectFileJava(){
-        countProjectFileJava = 0;
+        statistics.clearCountProjectFileJava();
     }
 
     public void deleteCountProjectFileResources(){
-        countProjectFileResources = 0;
+        statistics.clearCountProjectFileResources();
     }
 
     public void deleteCountProjectClass(){
-        countProjectClass = 0;
+        statistics.clearCountProjectClass();
     }
 
     public void checkCountJavaFiles(File[] files) throws FileNotFoundException {
@@ -86,7 +66,7 @@ public class analysisOfJavaProjects {
                     // Message to the user
                     System.out.println("JAVA FILE FOUND: " + file + "\n");
                     // I'm increasing the counter by 1
-                    countProjectFileJava++;
+                    statistics.plusCountProjectFileJava();
 
                     try {
 
@@ -100,15 +80,24 @@ public class analysisOfJavaProjects {
                         }
 
                         // Checking for multi-line comments
-                        String Reg = "\\/\\*[A-zА-я0-9\\W][^\\n]+";
-                        Pattern pattern = Pattern.compile(Reg);
+                        String RegDefault = "\\/\\*[A-zА-я0-9\\W][^\\/\\*]+";
+                        Pattern patternMultilineCommentsDefault = Pattern.compile(RegDefault);
 
-                        Matcher matcher = pattern.matcher(Text);
+                        Matcher matcherMultilineCommentsDefault = patternMultilineCommentsDefault.matcher(Text);
 
                         // If I see a multi-line comment, I increase the counter
-                        while(matcher.find()){
-                            countMultilineComments++;
+                        while(matcherMultilineCommentsDefault.find()){
+                            statistics.plusCountMultilineComments();
                         }
+
+//                        String RegStars = "\\/\\*\\*[A-zА-я0-9\\W][^\\/\\*]+";
+//                        Pattern patternMultilineCommentsStars = Pattern.compile(RegStars);
+//
+//                        Matcher matcherMultilineCommentsStars = patternMultilineCommentsStars.matcher(Text);
+//
+//                        while(matcherMultilineCommentsStars.find()){
+//                            statistics.plusCountMultilineComments();
+//                        }
 
                         // Checking for methods
                         String RegMethod = "(public|private|protected)[A-z0-9 ,]+\\(([A-z0-9 ,]+|)\\)";
@@ -128,15 +117,15 @@ public class analysisOfJavaProjects {
                             while(matcherMD.find()){
 
                                 if(matcherMD.group().equals("public")){
-                                    countMethodPublic++;
+                                    statistics.plusCountMethodPublic();
                                     break;
                                 }
                                 if(matcherMD.group().equals("private")){
-                                    countMethodPrivate++;
+                                    statistics.plusCountMethodPrivate();
                                     break;
                                 }
                                 if (matcherMD.group().equals("protected")){
-                                    countMethodProtected++;
+                                    statistics.plusCountMethodProtected();
                                     break;
                                 }
                             }
@@ -148,7 +137,7 @@ public class analysisOfJavaProjects {
                         Matcher matcherImports = patternImports.matcher(Text);
 
                         while(matcherImports.find()){
-                            countImports++;
+                            statistics.plusCountImports();
                         }
 
                         // Checking for package
@@ -157,7 +146,7 @@ public class analysisOfJavaProjects {
                         Matcher matcherPackage = patternPackage.matcher(Text);
 
                         while(matcherPackage.find()){
-                            countNumberPackages++;
+                            statistics.plusCountNumberPackages();
                         }
 
                         Scanner scanner2 = new Scanner(file);
@@ -167,10 +156,10 @@ public class analysisOfJavaProjects {
 
                             String Java_Str = scanner2.nextLine();
                             if(Java_Str.contains("//")){
-                                countStrCommentJavaCode++;
+                                statistics.plusCountStrCommentJavaCode();
                             }
 
-                            countStrJavaCode++;
+                            statistics.plusCountStrJavaCode();
 
                         }
 
@@ -180,26 +169,26 @@ public class analysisOfJavaProjects {
                     }
 
                     // Data output
-                    System.out.println("The amount of Java code in the file: " + file + " = " + countStrJavaCode);
-                    System.out.println("The number of comments in the Java code: " + file + " = " + countStrCommentJavaCode);
-                    System.out.println("The number of multiline comments: " + file + " = " + countMultilineComments + "\n");
-                    System.out.println("Number of public methods: " + file + " = " + countMethodPublic);
-                    System.out.println("Number of private methods: " + file + " = " + countMethodPrivate);
-                    System.out.println("Number of protected methods: " + file + " = " + countMethodProtected + "\n");
-                    System.out.println("Number of imported modules: " + file + " = " + countImports +  "\n");
-                    System.out.println("Number of packages: " + file + " = " + countNumberPackages);
+                    System.out.println("The amount of Java code in the file: " + file + " = " + statistics.getCountStrJavaCode());
+                    System.out.println("The number of comments in the Java code: " + file + " = " + statistics.getCountStrCommentJavaCode());
+                    System.out.println("The number of multiline comments: " + file + " = " + statistics.getCountMultilineComments() + "\n");
+                    System.out.println("Number of public methods: " + file + " = " + statistics.getCountMethodPublic());
+                    System.out.println("Number of private methods: " + file + " = " + statistics.getCountMethodPrivate());
+                    System.out.println("Number of protected methods: " + file + " = " + statistics.getCountMethodProtected() + "\n");
+                    System.out.println("Number of imported modules: " + file + " = " + statistics.getCountImports() +  "\n");
+                    System.out.println("Number of packages: " + file + " = " + statistics.getCountNumberPackages());
 
                     System.out.println("\n");
 
                     // Cleaning the counter
-                    countStrCommentJavaCode = 0;
-                    countStrJavaCode = 0;
-                    countMultilineComments = 0;
-                    countMethodPublic = 0;
-                    countMethodPrivate = 0;
-                    countMethodProtected = 0;
-                    countImports = 0;
-                    countNumberPackages = 0;
+                    statistics.clearCountStrCommentJavaCode();
+                    statistics.clearCountStrJavaCode();
+                    statistics.clearCountMultilineComments();
+                    statistics.clearCountMethodPublic();
+                    statistics.clearCountMethodPrivate();
+                    statistics.clearCountMethodProtected();
+                    statistics.clearCountImports();
+                    statistics.clearCountNumberPackages();
 
                 }
 
@@ -228,7 +217,7 @@ public class analysisOfJavaProjects {
                 // Checking for classes
                 if (Split[Split.length - 1].equals("class")) {
                     System.out.println("THE CLASS FILE WAS FOUND: " + file + "\n");
-                    countProjectClass++;
+                    statistics.plusCountProjectClass();
 
                 }
             }
@@ -250,7 +239,7 @@ public class analysisOfJavaProjects {
                     assert file_resources != null;
                     for (File file1 : file_resources){
                         System.out.println("\nRESOURCE FILE FOUND: " + file1 + "\n");
-                        countProjectFileResources++;
+                        statistics.plusCountProjectFileResources();
                     }
 
                 }
