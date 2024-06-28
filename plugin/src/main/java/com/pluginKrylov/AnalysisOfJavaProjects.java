@@ -12,7 +12,22 @@ public class AnalysisOfJavaProjects {
     private final Statistics statistics = new Statistics();
 
     // Add separator (/) or (\)
-    String separator = File.separator;
+    private final String separator = File.separator;
+
+    // Pattern
+    private static Pattern pattern;
+
+    // RegV
+    private static String reg;
+
+    // Matcher
+    private static Matcher matcher;
+
+    private boolean isDebug;
+
+    public AnalysisOfJavaProjects(boolean isDebug){
+        this.isDebug = isDebug;
+    }
 
     // Getter - return count java files
     public int getCountProjectFilJava(){
@@ -47,71 +62,65 @@ public class AnalysisOfJavaProjects {
             if(file.isDirectory()){
 
                 // I take a directory (folder) and divide it into a list of files.
-                File Directory = new File(String.valueOf(file));
-                File[] Content_Directory = Directory.listFiles();
+                File directory = new File(String.valueOf(file));
+                File[] contentDirectory = directory.listFiles();
 
                 // Checking that the directory is not empty
-                assert Content_Directory != null;
+                assert contentDirectory != null;
                 // I use recursion
-                checkCountJavaFiles(Content_Directory);
+                checkCountJavaFiles(contentDirectory);
 
             }
             else{
 
                 // I divide the file line by a point to find the extension
-                String[] Split = String.valueOf(file).split("\\.");
+                String nameFile = file.getName();
 
                 // If the extension .java is fulfilling the condition
-                if(Split[Split.length-1].equals("java")){
+                if(nameFile.lastIndexOf("java") > 0){
+
                     // Message to the user
-                    System.out.println("JAVA FILE FOUND: " + file + "\n");
+                    System.out.println("\nJAVA FILE FOUND: " + file + "\n");
+
+
                     // I'm increasing the counter by 1
                     statistics.plusCountProjectFileJava();
 
                     try {
 
                         // I'm collecting the text
-                        String Text = "";
-                        Scanner scanner1 = new Scanner(file);
+                        StringBuilder textSB = new StringBuilder();
+                        Scanner scannerTextConcat = new Scanner(file);
 
                         // I'm collecting the text
-                        while(scanner1.hasNextLine()){
-                            Text = Text + scanner1.nextLine() + "\n";
+                        while(scannerTextConcat.hasNextLine()){
+                            textSB.append(scannerTextConcat.nextLine()).append("\n");
                         }
 
                         // Checking for multi-line comments
-                        String RegDefault = "\\/\\*[A-zА-я0-9\\W][^\\/\\*]+";
-                        Pattern patternMultilineCommentsDefault = Pattern.compile(RegDefault);
+                        reg = "\\/\\*[A-zА-я0-9\\W][^\\/\\*]+";
+                        pattern = Pattern.compile(reg);
 
-                        Matcher matcherMultilineCommentsDefault = patternMultilineCommentsDefault.matcher(Text);
+                        matcher = pattern.matcher(textSB.toString());
 
                         // If I see a multi-line comment, I increase the counter
-                        while(matcherMultilineCommentsDefault.find()){
+                        while(matcher.find()){
                             statistics.plusCountMultilineComments();
                         }
 
-//                        String RegStars = "\\/\\*\\*[A-zА-я0-9\\W][^\\/\\*]+";
-//                        Pattern patternMultilineCommentsStars = Pattern.compile(RegStars);
-//
-//                        Matcher matcherMultilineCommentsStars = patternMultilineCommentsStars.matcher(Text);
-//
-//                        while(matcherMultilineCommentsStars.find()){
-//                            statistics.plusCountMultilineComments();
-//                        }
-
                         // Checking for methods
-                        String RegMethod = "(public|private|protected)[A-z0-9 ,]+\\(([A-z0-9 ,]+|)\\)";
-                        Pattern patternMethod = Pattern.compile(RegMethod);
+                        reg = "(public|private|protected)[A-z0-9 ,]+\\(([A-z0-9 ,]+|)\\)";
+                        pattern = Pattern.compile(reg);
 
-                        Matcher matcherMethod = patternMethod.matcher(Text);
+                        matcher = pattern.matcher(textSB.toString());
 
                         // If there are methods, I look at the access modifier
-                        while(matcherMethod.find()){
+                        while(matcher.find()){
 
-                            String MethodStr = matcherMethod.group();
-                            String RegMD = "(public|private|protected)";
+                            String MethodStr = matcher.group();
+                            reg = "(public|private|protected)";
 
-                            Pattern patternMD = Pattern.compile(RegMD);
+                            Pattern patternMD = Pattern.compile(reg);
                             Matcher matcherMD = patternMD.matcher(MethodStr);
 
                             while(matcherMD.find()){
@@ -132,30 +141,30 @@ public class AnalysisOfJavaProjects {
                         }
 
                         // Checking for imports
-                        String RegImport = "import [ .А-яA-z0-9*]+;";
-                        Pattern patternImports = Pattern.compile(RegImport);
-                        Matcher matcherImports = patternImports.matcher(Text);
+                        reg = "import [ .А-яA-z0-9*]+;";
+                        pattern = Pattern.compile(reg);
+                        matcher = pattern.matcher(textSB.toString());
 
-                        while(matcherImports.find()){
+                        while(matcher.find()){
                             statistics.plusCountImports();
                         }
 
                         // Checking for package
-                        String RegPackage = "package [A-zА-я0-9.$*]+;";
-                        Pattern patternPackage = Pattern.compile(RegPackage);
-                        Matcher matcherPackage = patternPackage.matcher(Text);
+                        reg = "package [A-zА-я0-9.$*]+;";
+                        pattern = Pattern.compile(reg);
+                        matcher = pattern.matcher(textSB.toString());
 
-                        while(matcherPackage.find()){
+                        while(matcher.find()){
                             statistics.plusCountNumberPackages();
                         }
 
-                        Scanner scanner2 = new Scanner(file);
+                        Scanner scannerCheckComment = new Scanner(file);
 
                         // Counting the number of lines of code and comments
-                        while(scanner2.hasNextLine()){
+                        while(scannerCheckComment.hasNextLine()){
 
-                            String Java_Str = scanner2.nextLine();
-                            if(Java_Str.contains("//")){
+                            String javaStr = scannerCheckComment.nextLine();
+                            if(javaStr.contains("//")){
                                 statistics.plusCountStrCommentJavaCode();
                             }
 
@@ -172,11 +181,14 @@ public class AnalysisOfJavaProjects {
                     System.out.println("The amount of Java code in the file: " + file + " = " + statistics.getCountStrJavaCode());
                     System.out.println("The number of comments in the Java code: " + file + " = " + statistics.getCountStrCommentJavaCode());
                     System.out.println("The number of multiline comments: " + file + " = " + statistics.getCountMultilineComments() + "\n");
-                    System.out.println("Number of public methods: " + file + " = " + statistics.getCountMethodPublic());
-                    System.out.println("Number of private methods: " + file + " = " + statistics.getCountMethodPrivate());
-                    System.out.println("Number of protected methods: " + file + " = " + statistics.getCountMethodProtected() + "\n");
-                    System.out.println("Number of imported modules: " + file + " = " + statistics.getCountImports() +  "\n");
-                    System.out.println("Number of packages: " + file + " = " + statistics.getCountNumberPackages());
+
+                    if(isDebug) {
+                        System.out.println("Number of public methods: " + file + " = " + statistics.getCountMethodPublic());
+                        System.out.println("Number of private methods: " + file + " = " + statistics.getCountMethodPrivate());
+                        System.out.println("Number of protected methods: " + file + " = " + statistics.getCountMethodProtected() + "\n");
+                        System.out.println("Number of imported modules: " + file + " = " + statistics.getCountImports() + "\n");
+                        System.out.println("Number of packages: " + file + " = " + statistics.getCountNumberPackages());
+                    }
 
                     System.out.println("\n");
 
@@ -204,19 +216,23 @@ public class AnalysisOfJavaProjects {
 
             if (file.isDirectory()) {
 
-                File Directory = new File(String.valueOf(file));
-                File[] Content_Directory = Directory.listFiles();
+                File directory = new File(String.valueOf(file));
+                File[] contentDirectory = directory.listFiles();
 
-                assert Content_Directory != null;
-                checkFilesClass(Content_Directory);
+                assert contentDirectory != null;
+                checkFilesClass(contentDirectory);
 
             } else {
 
-                String[] Split = String.valueOf(file).split("\\.");
+                String nameFile = file.getName();
 
                 // Checking for classes
-                if (Split[Split.length - 1].equals("class")) {
-                    System.out.println("THE CLASS FILE WAS FOUND: " + file + "\n");
+                if ((nameFile.lastIndexOf("class") > 0)){
+
+                    if(isDebug) {
+                        System.out.println("THE CLASS FILE WAS FOUND: " + file + "\n");
+                    }
+
                     statistics.plusCountProjectClass();
 
                 }
@@ -226,26 +242,30 @@ public class AnalysisOfJavaProjects {
 
     public void checkResourcesFile(File[] files){
 
-        for(File file : files){
+        for(File fileOne : files){
 
-            File Directory = new File(String.valueOf(file));
-            File[] file_resources = Directory.listFiles();
+            File directory = new File(String.valueOf(fileOne));
+            File[] fileResources = directory.listFiles();
 
-            if(file.isDirectory()){
+            if(fileOne.isDirectory()){
 
-                if(String.valueOf(file).contains("resources")){
+                if(String.valueOf(fileOne).contains("resources")){
 
                     // Checking for resources
-                    assert file_resources != null;
-                    for (File file1 : file_resources){
-                        System.out.println("\nRESOURCE FILE FOUND: " + file1 + "\n");
+                    assert fileResources != null;
+                    for (File fileTwo : fileResources){
+
+                        if(isDebug) {
+                            System.out.println("\nRESOURCE FILE FOUND: " + fileTwo + "\n");
+                        }
+
                         statistics.plusCountProjectFileResources();
                     }
 
                 }
 
-                assert file_resources != null;
-                checkResourcesFile(file_resources);
+                assert fileResources != null;
+                checkResourcesFile(fileResources);
 
             }
 

@@ -15,27 +15,21 @@ class GradlePluginKrylovGRPluginTest {
         assertNotNull(project.getTasks().findByName("analysisAll"));
     }
     @Test void pluginRegistersATask2() {
-        // Create a test project and apply the plugin
         Project project = ProjectBuilder.builder().build();
         project.getPlugins().apply("com.pluginKrylov.analysisJavaProjects");
 
-        // Verify the result
         assertNotNull(project.getTasks().findByName("analysisJavaProjects"));
     }
     @Test void pluginRegistersATask3() {
-        // Create a test project and apply the plugin
         Project project = ProjectBuilder.builder().build();
         project.getPlugins().apply("com.pluginKrylov.analysisClassFiles");
 
-        // Verify the result
         assertNotNull(project.getTasks().findByName("analysisClassFiles"));
     }
     @Test void pluginRegistersATask4() {
-        // Create a test project and apply the plugin
         Project project = ProjectBuilder.builder().build();
         project.getPlugins().apply("com.pluginKrylov.analysisFileResources");
 
-        // Verify the result
         assertNotNull(project.getTasks().findByName("analysisFileResources"));
     }
 }
