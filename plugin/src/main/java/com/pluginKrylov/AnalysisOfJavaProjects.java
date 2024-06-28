@@ -23,8 +23,10 @@ public class AnalysisOfJavaProjects {
     // Matcher
     private static Matcher matcher;
 
+    // isDebug
     private boolean isDebug;
 
+    // Designer
     public AnalysisOfJavaProjects(boolean isDebug){
         this.isDebug = isDebug;
     }
@@ -55,6 +57,7 @@ public class AnalysisOfJavaProjects {
         statistics.clearCountProjectClass();
     }
 
+    // A method for checking for multiline comments
     public void checkMultiLineComments(StringBuilder textSB){
 
         // Checking for multi-line comments
@@ -70,6 +73,7 @@ public class AnalysisOfJavaProjects {
 
     }
 
+    // Method for checking for methods and type of methods
     public void checkMethod(StringBuilder textSB){
 
         // Checking for methods
@@ -108,6 +112,7 @@ public class AnalysisOfJavaProjects {
 
     }
 
+    // Method for checking for imports
     public void checkImport(StringBuilder textSB){
 
         // Checking for imports
@@ -121,6 +126,7 @@ public class AnalysisOfJavaProjects {
 
     }
 
+    // Method for checking for package
     public void checkPackage(StringBuilder textSB){
 
         // Checking for package
@@ -134,6 +140,7 @@ public class AnalysisOfJavaProjects {
 
     }
 
+    // Method for checking for comments
     public void checkComment(File file) throws FileNotFoundException {
 
         Scanner scannerCheckComment = new Scanner(file);
@@ -150,8 +157,11 @@ public class AnalysisOfJavaProjects {
 
         }
 
+        scannerCheckComment.close();
+
     }
 
+    // A method for displaying information
     public void informationOutput(File file){
 
         // Data output
@@ -181,6 +191,7 @@ public class AnalysisOfJavaProjects {
 
     }
 
+    // A method for determining the number of Java files
     public void checkCountJavaFiles(File[] files) throws FileNotFoundException {
 
         for(File file : files){
@@ -232,35 +243,14 @@ public class AnalysisOfJavaProjects {
 
                         checkComment(file);
 
+                        scannerTextConcat.close();
+
                     } catch (FileNotFoundException e) {
                         System.out.println("There is no such file, or it cannot be found!\n");
                         throw new FileNotFoundException();
                     }
 
-                    // Data output
-                    System.out.println("The amount of Java code in the file: " + file + " = " + statistics.getCountStrJavaCode());
-                    System.out.println("The number of comments in the Java code: " + file + " = " + statistics.getCountStrCommentJavaCode());
-                    System.out.println("The number of multiline comments: " + file + " = " + statistics.getCountMultilineComments() + "\n");
-
-                    if(isDebug) {
-                        System.out.println("Number of public methods: " + file + " = " + statistics.getCountMethodPublic());
-                        System.out.println("Number of private methods: " + file + " = " + statistics.getCountMethodPrivate());
-                        System.out.println("Number of protected methods: " + file + " = " + statistics.getCountMethodProtected() + "\n");
-                        System.out.println("Number of imported modules: " + file + " = " + statistics.getCountImports() + "\n");
-                        System.out.println("Number of packages: " + file + " = " + statistics.getCountNumberPackages());
-                    }
-
-                    System.out.println("\n");
-
-                    // Cleaning the counter
-                    statistics.clearCountStrCommentJavaCode();
-                    statistics.clearCountStrJavaCode();
-                    statistics.clearCountMultilineComments();
-                    statistics.clearCountMethodPublic();
-                    statistics.clearCountMethodPrivate();
-                    statistics.clearCountMethodProtected();
-                    statistics.clearCountImports();
-                    statistics.clearCountNumberPackages();
+                    informationOutput(file);
 
                 }
 
@@ -270,6 +260,7 @@ public class AnalysisOfJavaProjects {
 
     }
 
+    // A method for determining the number of class files
     public void checkFilesClass(File[] files) {
 
         for (File file : files) {
@@ -300,6 +291,7 @@ public class AnalysisOfJavaProjects {
         }
     }
 
+    // A method for determining the number of resources files
     public void checkResourcesFile(File[] files){
 
         for(File fileOne : files){
