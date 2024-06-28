@@ -69,6 +69,8 @@ public class GradlePluginKrylovGRPlugin implements Plugin<Project> {
                analysisOfJavaProjects.deleteCountProjectClass();
                analysisOfJavaProjects.deleteCountProjectFileResources();
 
+               System.out.println("\n");
+
            });
         });
 
@@ -111,6 +113,8 @@ public class GradlePluginKrylovGRPlugin implements Plugin<Project> {
 
                analysisOfJavaProjects.deleteCountProjectFileJava();
 
+               System.out.println("\n");
+
            });
         });
 
@@ -145,6 +149,8 @@ public class GradlePluginKrylovGRPlugin implements Plugin<Project> {
                System.out.println("The number of class files found: " + analysisOfJavaProjects.getCountProjectClass());
 
                analysisOfJavaProjects.deleteCountProjectClass();
+
+               System.out.println("\n");
 
            });
         });
@@ -183,6 +189,8 @@ public class GradlePluginKrylovGRPlugin implements Plugin<Project> {
                System.out.println("The number of resource files found: " + analysisOfJavaProjects.getCountProjectFileResources());
 
                analysisOfJavaProjects.deleteCountProjectFileResources();
+
+               System.out.println("\n");
 
            });
         });

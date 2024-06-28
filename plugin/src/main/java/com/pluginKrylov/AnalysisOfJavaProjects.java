@@ -55,6 +55,132 @@ public class AnalysisOfJavaProjects {
         statistics.clearCountProjectClass();
     }
 
+    public void checkMultiLineComments(StringBuilder textSB){
+
+        // Checking for multi-line comments
+        reg = "\\/\\*[A-zА-я0-9\\W][^\\/\\*]+";
+        pattern = Pattern.compile(reg);
+
+        matcher = pattern.matcher(textSB.toString());
+
+        // If I see a multi-line comment, I increase the counter
+        while(matcher.find()){
+            statistics.plusCountMultilineComments();
+        }
+
+    }
+
+    public void checkMethod(StringBuilder textSB){
+
+        // Checking for methods
+        reg = "(public|private|protected)[A-z0-9 ,]+\\(([A-z0-9 ,]+|)\\)";
+        pattern = Pattern.compile(reg);
+
+        matcher = pattern.matcher(textSB.toString());
+
+        // If there are methods, I look at the access modifier
+        while(matcher.find()){
+
+            String MethodStr = matcher.group();
+            reg = "(public|private|protected)";
+
+            Pattern patternMD = Pattern.compile(reg);
+            Matcher matcherMD = patternMD.matcher(MethodStr);
+
+            while(matcherMD.find()){
+
+                switch(matcherMD.group()){
+                    case("public"):{
+                        statistics.plusCountMethodPublic();
+                        break;
+                    }
+                    case("private"):{
+                        statistics.plusCountMethodPrivate();
+                        break;
+                    }
+                    case("protected"):{
+                        statistics.plusCountMethodProtected();
+                        break;
+                    }
+                }
+            }
+        }
+
+    }
+
+    public void checkImport(StringBuilder textSB){
+
+        // Checking for imports
+        reg = "import [ .А-яA-z0-9*]+;";
+        pattern = Pattern.compile(reg);
+        matcher = pattern.matcher(textSB.toString());
+
+        while(matcher.find()){
+            statistics.plusCountImports();
+        }
+
+    }
+
+    public void checkPackage(StringBuilder textSB){
+
+        // Checking for package
+        reg = "package [A-zА-я0-9.$*]+;";
+        pattern = Pattern.compile(reg);
+        matcher = pattern.matcher(textSB.toString());
+
+        while(matcher.find()){
+            statistics.plusCountNumberPackages();
+        }
+
+    }
+
+    public void checkComment(File file) throws FileNotFoundException {
+
+        Scanner scannerCheckComment = new Scanner(file);
+
+        // Counting the number of lines of code and comments
+        while(scannerCheckComment.hasNextLine()){
+
+            String javaStr = scannerCheckComment.nextLine();
+            if(javaStr.contains("//")){
+                statistics.plusCountStrCommentJavaCode();
+            }
+
+            statistics.plusCountStrJavaCode();
+
+        }
+
+    }
+
+    public void informationOutput(File file){
+
+        // Data output
+        System.out.println("The amount of Java code in the file: " + file + " = " + statistics.getCountStrJavaCode());
+        System.out.println("The number of comments in the Java code: " + file + " = " + statistics.getCountStrCommentJavaCode());
+        System.out.println("The number of multiline comments: " + file + " = " + statistics.getCountMultilineComments() + "\n");
+
+        if(isDebug) {
+            System.out.println("Number of public methods: " + file + " = " + statistics.getCountMethodPublic());
+            System.out.println("Number of private methods: " + file + " = " + statistics.getCountMethodPrivate());
+            System.out.println("Number of protected methods: " + file + " = " + statistics.getCountMethodProtected() + "\n");
+            System.out.println("Number of imported modules: " + file + " = " + statistics.getCountImports() + "\n");
+            System.out.println("Number of packages: " + file + " = " + statistics.getCountNumberPackages());
+        }
+
+        System.out.println("\n");
+
+        // Cleaning the counter
+        statistics.clearCountStrCommentJavaCode();
+        statistics.clearCountStrJavaCode();
+        statistics.clearCountMultilineComments();
+        statistics.clearCountMethodPublic();
+        statistics.clearCountMethodPrivate();
+        statistics.clearCountMethodProtected();
+        statistics.clearCountImports();
+        statistics.clearCountNumberPackages();
+
+    }
+
     public void checkCountJavaFiles(File[] files) throws FileNotFoundException {
 
         for(File file : files){
@@ -82,7 +208,6 @@ public class AnalysisOfJavaProjects {
                     // Message to the user
                     System.out.println("\nJAVA FILE FOUND: " + file + "\n");
 
-
                     // I'm increasing the counter by 1
                     statistics.plusCountProjectFileJava();
 
@@ -97,80 +222,15 @@ public class AnalysisOfJavaProjects {
                             textSB.append(scannerTextConcat.nextLine()).append("\n");
                         }
 
-                        // Checking for multi-line comments
-                        reg = "\\/\\*[A-zА-я0-9\\W][^\\/\\*]+";
-                        pattern = Pattern.compile(reg);
+                        checkMultiLineComments(textSB);
 
-                        matcher = pattern.matcher(textSB.toString());
+                        checkMethod(textSB);
 
-                        // If I see a multi-line comment, I increase the counter
-                        while(matcher.find()){
-                            statistics.plusCountMultilineComments();
-                        }
+                        checkImport(textSB);
 
-                        // Checking for methods
-                        reg = "(public|private|protected)[A-z0-9 ,]+\\(([A-z0-9 ,]+|)\\)";
-                        pattern = Pattern.compile(reg);
+                        checkPackage(textSB);
 
-                        matcher = pattern.matcher(textSB.toString());
-
-                        // If there are methods, I look at the access modifier
-                        while(matcher.find()){
-
-                            String MethodStr = matcher.group();
-                            reg = "(public|private|protected)";
-
-                            Pattern patternMD = Pattern.compile(reg);
-                            Matcher matcherMD = patternMD.matcher(MethodStr);
-
-                            while(matcherMD.find()){
-
-                                if(matcherMD.group().equals("public")){
-                                    statistics.plusCountMethodPublic();
-                                    break;
-                                }
-                                if(matcherMD.group().equals("private")){
-                                    statistics.plusCountMethodPrivate();
-                                    break;
-                                }
-                                if (matcherMD.group().equals("protected")){
-                                    statistics.plusCountMethodProtected();
-                                    break;
-                                }
-                            }
-                        }
-
-                        // Checking for imports
-                        reg = "import [ .А-яA-z0-9*]+;";
-                        pattern = Pattern.compile(reg);
-                        matcher = pattern.matcher(textSB.toString());
-
-                        while(matcher.find()){
-                            statistics.plusCountImports();
-                        }
-
-                        // Checking for package
-                        reg = "package [A-zА-я0-9.$*]+;";
-                        pattern = Pattern.compile(reg);
-                        matcher = pattern.matcher(textSB.toString());
-
-                        while(matcher.find()){
-                            statistics.plusCountNumberPackages();
-                        }
-
-                        Scanner scannerCheckComment = new Scanner(file);
-
-                        // Counting the number of lines of code and comments
-                        while(scannerCheckComment.hasNextLine()){
-
-                            String javaStr = scannerCheckComment.nextLine();
-                            if(javaStr.contains("//")){
-                                statistics.plusCountStrCommentJavaCode();
-                            }
-
-                            statistics.plusCountStrJavaCode();
-
-                        }
+                        checkComment(file);
 
                     } catch (FileNotFoundException e) {
                         System.out.println("There is no such file, or it cannot be found!\n");
