@@ -3,6 +3,7 @@ plugins {
     id 'java'
     id 'groovy'
     id 'maven-publish'
+    id 'com.pluginKrylov.analysisAll' version '0.0.1-SNAPSHOT'
 }
 
 group="com.pluginKrylov"

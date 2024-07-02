@@ -17,8 +17,7 @@ public class GradlePluginKrylovGRPlugin implements Plugin<Project> {
         project.getTasks().register("analysisAll",task -> {
            task.doLast(task1 -> {
 
-               Scanner scanner = new Scanner(System.in);
-               String currentPatch = scanner.nextLine();
+               String currentPatch = project.getProjectDir().toString();
 
                // Output the full path to the root cat
                if(isDebug) {
@@ -36,6 +35,7 @@ public class GradlePluginKrylovGRPlugin implements Plugin<Project> {
                }
 
                try {
+                   assert list != null;
                    analysisOfJavaProjects.checkCountJavaFiles(list);
                } catch (FileNotFoundException e) {
                    throw new RuntimeException(e);
@@ -73,8 +73,7 @@ public class GradlePluginKrylovGRPlugin implements Plugin<Project> {
         project.getTasks().register("analysisJavaProjects",task -> {
            task.doLast(task1 -> {
 
-               Scanner scanner = new Scanner(System.in);
-               String currentPatch = scanner.nextLine();
+               String currentPatch = project.getProjectDir().toString();
 
                // Output the full path to the root cat
                if(isDebug) {
@@ -92,6 +91,7 @@ public class GradlePluginKrylovGRPlugin implements Plugin<Project> {
                }
 
                try {
+                   assert list != null;
                    analysisOfJavaProjects.checkCountJavaFiles(list);
                } catch (FileNotFoundException e) {
                    throw new RuntimeException(e);
@@ -113,8 +113,7 @@ public class GradlePluginKrylovGRPlugin implements Plugin<Project> {
         project.getTasks().register("analysisClassFiles",task -> {
            task.doLast(task1 -> {
 
-               Scanner scanner = new Scanner(System.in);
-               String currentPatch = scanner.nextLine();
+               String currentPatch = project.getProjectDir().toString();
 
                // Output the full path to the root cat
                if(isDebug) {
@@ -131,6 +130,7 @@ public class GradlePluginKrylovGRPlugin implements Plugin<Project> {
                    System.out.println("I'M STARTING TO LOOK FOR CLASS FILES: " + "\n");
                }
 
+               assert list != null;
                analysisOfJavaProjects.checkFilesClass(list);
 
                if(isDebug) {
@@ -149,8 +149,7 @@ public class GradlePluginKrylovGRPlugin implements Plugin<Project> {
         project.getTasks().register("analysisFileResources",task -> {
            task.doLast(task1 -> {
 
-               Scanner scanner = new Scanner(System.in);
-               String currentPatch = scanner.nextLine();
+               String currentPatch = project.getProjectDir().toString();
 
                // Output the full path to the root cat
                if(isDebug) {
@@ -167,6 +166,7 @@ public class GradlePluginKrylovGRPlugin implements Plugin<Project> {
                    System.out.println("I'M STARTING TO SEARCH FOR RESOURCE FILES: " + "\n");
                }
 
+               assert list != null;
                analysisOfJavaProjects.checkResourcesFile(list);
 
                if(isDebug) {

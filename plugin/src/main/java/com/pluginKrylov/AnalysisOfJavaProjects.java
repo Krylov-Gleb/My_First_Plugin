@@ -143,21 +143,21 @@ public class AnalysisOfJavaProjects {
     // Method for checking for comments
     public void checkComment(File file) throws FileNotFoundException {
 
-        Scanner scannerCheckComment = new Scanner(file);
+        try(Scanner scannerCheckComment = new Scanner(file)){
 
-        // Counting the number of lines of code and comments
-        while(scannerCheckComment.hasNextLine()){
+            // Counting the number of lines of code and comments
+            while(scannerCheckComment.hasNextLine()){
 
-            String javaStr = scannerCheckComment.nextLine();
-            if(javaStr.contains("//")){
-                statistics.plusCountStrCommentJavaCode();
+                String javaStr = scannerCheckComment.nextLine();
+                if(javaStr.contains("//")){
+                    statistics.plusCountStrCommentJavaCode();
+                }
+
+                statistics.plusCountStrJavaCode();
+
             }
 
-            statistics.plusCountStrJavaCode();
-
         }
-
-        scannerCheckComment.close();
 
     }
 
@@ -226,27 +226,27 @@ public class AnalysisOfJavaProjects {
 
                         // I'm collecting the text
                         StringBuilder textSB = new StringBuilder();
-                        Scanner scannerTextConcat = new Scanner(file);
 
-                        // I'm collecting the text
-                        while(scannerTextConcat.hasNextLine()){
-                            textSB.append(scannerTextConcat.nextLine()).append("\n");
+                        try(Scanner scannerTextConcat = new Scanner(file);){
+
+                            // I'm collecting the text
+                            while(scannerTextConcat.hasNextLine()){
+                                textSB.append(scannerTextConcat.nextLine()).append("\n");
+                            }
+
+                            checkMultiLineComments(textSB);
+
+                            checkMethod(textSB);
+
+                            checkImport(textSB);
+
+                            checkPackage(textSB);
+
+                            checkComment(file);
+
                         }
 
-                        checkMultiLineComments(textSB);
-
-                        checkMethod(textSB);
-
-                        checkImport(textSB);
-
-                        checkPackage(textSB);
-
-                        checkComment(file);
-
-                        scannerTextConcat.close();
-
                     } catch (FileNotFoundException e) {
-                        System.out.println("There is no such file, or it cannot be found!\n");
                         throw new FileNotFoundException();
                     }
 

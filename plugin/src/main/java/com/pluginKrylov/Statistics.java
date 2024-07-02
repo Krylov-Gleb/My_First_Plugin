@@ -9,27 +9,27 @@ public class Statistics {
 
      */
 
-    private static int countProjectFileJava = 0;
+    private int countProjectFileJava = 0;
 
-    private static int countProjectFileResources = 0;
+    private int countProjectFileResources = 0;
 
-    private static int countProjectClass = 0;
+    private int countProjectClass = 0;
 
-    private static int countStrJavaCode = 0;
+    private int countStrJavaCode = 0;
 
-    private static int countStrCommentJavaCode = 0;
+    private int countStrCommentJavaCode = 0;
 
-    private static int countMultilineComments = 0;
+    private int countMultilineComments = 0;
 
-    private static int countMethodPublic = 0;
+    private int countMethodPublic = 0;
 
-    private static int countMethodPrivate = 0;
+    private int countMethodPrivate = 0;
 
-    private static int countMethodProtected = 0;
+    private int countMethodProtected = 0;
 
-    private static int countImports = 0;
+    private int countImports = 0;
 
-    private static int countNumberPackages = 0;
+    private int countNumberPackages = 0;
 
     /*
 
